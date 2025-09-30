@@ -1,0 +1,29 @@
+services:
+    strichliste:
+        build:
+            context: .
+        # if you use traefik you can remove the ports section
+        ports:
+            - 8080:80
+            - 8443:443
+        env_file:
+            - docker.env
+        volumes:
+            - ./config/services.yaml:/source/config/services.yaml
+            - ./config/strichliste.yaml:/source/config/strichliste.yaml
+            - ./config/doctrine.yaml:/source/config/packages/doctrine.yaml
+
+        environment:
+            APP_ENV: "prod"
+
+    strichliste-db:
+        image: mariadb:12.0.2
+        restart: always
+        env_file:
+            - docker.env
+        volumes:
+            - ./data/mysql:/var/lib/mysql
+
+networks:
+    proxy:
+        external: true
