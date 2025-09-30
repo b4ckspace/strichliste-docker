@@ -60,4 +60,4 @@ COPY --from=static /go/src/app/dist/frankenphp-linux-x86_64 /app
 ENV FRANKENPHP_CONFIG="worker ./public/index.php"
 ENV APP_RUNTIME="Runtime\\FrankenPhpSymfony\\Runtime"
 ENV APP_ENV=dev
-ENTRYPOINT ["/app", "php-server"]
+ENTRYPOINT ["/app", "php-server", "--listen", ":8080"]
