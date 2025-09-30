@@ -17,7 +17,7 @@ RUN composer require runtime/frankenphp-symfony
 
 # ---
 
-FROM node:20.19.5-trixie AS jsbuild
+FROM node:24.9.0-trixie AS jsbuild
 
 ADD https://github.com/strichliste/strichliste-web-frontend.git#v1.7.1 /app/frontend
 WORKDIR /app/frontend
