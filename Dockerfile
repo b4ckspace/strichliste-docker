@@ -25,6 +25,7 @@ WORKDIR /app/frontend
 RUN yarn install
 
 ENV NODE_OPTIONS=--openssl-legacy-provider
+ENV NODE_ENV=production
 RUN yarn build
 
 # ---
@@ -35,29 +36,29 @@ RUN install-php-extensions pdo_pgsql pdo_mysql mysqli bcmath imagick
 
 COPY --from=phpbuild /app/backend /app
 COPY --from=jsbuild /app/frontend/build /app/public
+RUN rm -rf /app/var
 
 WORKDIR /app
 
-ENV FRANKENPHP_CONFIG="worker ./public/index.php"
+ENV APP_ENV=production
 ENV APP_RUNTIME="Runtime\\FrankenPhpSymfony\\Runtime"
-ENV APP_ENV=dev
+ENV FRANKENPHP_CONFIG="worker ./public/index.php"
+ENV SERVER_NAME=":8080"
 
 # ---
 
 FROM dunglas/frankenphp:static-builder-musl-1.9.1 AS static
-
-COPY --from=docker /app /app
-
-WORKDIR /go/src/app/
-RUN NO_COMPRESS=1 EMBED=/app/ ./build-static.sh
+RUN NO_COMPRESS=1 ./build-static.sh
 
 # ---
 
-FROM scratch
+FROM busybox
 
-COPY --from=static /go/src/app/dist/frankenphp-linux-x86_64 /app
+WORKDIR /app
+COPY --from=static /go/src/app/dist/frankenphp-linux-x86_64 /php
+COPY --from=docker /app /app
 
-ENV FRANKENPHP_CONFIG="worker ./public/index.php"
-ENV APP_RUNTIME="Runtime\\FrankenPhpSymfony\\Runtime"
-ENV APP_ENV=dev
-ENTRYPOINT ["/app", "php-server", "--listen", ":8080"]
+ENV HOME=/app
+
+ENV APP_ENV=production
+ENTRYPOINT ["/php", "php-server", "--listen", ":8080", "-r", "/app/public"]
