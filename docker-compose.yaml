@@ -4,14 +4,11 @@ services:
             context: .
         # if you use traefik you can remove the ports section
         ports:
-            - 8080:80
-            - 8443:443
+            - 8080:8080
         env_file:
             - docker.env
         volumes:
-            - ./config/services.yaml:/source/config/services.yaml
-            - ./config/strichliste.yaml:/source/config/strichliste.yaml
-            - ./config/doctrine.yaml:/source/config/packages/doctrine.yaml
+            - ./config/strichliste.yaml:/app/config/strichliste.yaml
 
         environment:
             APP_ENV: "prod"
