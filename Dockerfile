@@ -1,4 +1,4 @@
-FROM composer:2.8.12 as phpcomposer
+FROM composer:2.9.2 as phpcomposer
 
 # ---
 
