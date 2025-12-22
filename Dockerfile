@@ -47,7 +47,7 @@ ENV SERVER_NAME=":8080"
 
 # ---
 
-FROM dunglas/frankenphp:static-builder-musl-1.9.1 AS static
+FROM dunglas/frankenphp:static-builder-musl-1.11.0 AS static
 RUN NO_COMPRESS=1 ./build-static.sh
 
 # ---
